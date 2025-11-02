@@ -119,6 +119,7 @@ section.dashdiv .dashelectcont{
 section.dashdiv .electionalert{
     animation: headerAnimation 7s ease-in-out infinite;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1rem;
@@ -134,7 +135,7 @@ section.dashdiv .electionalert{
             color: hsl(0, 100%, 40%);
         }
     }
-    button{
+    a.tally{
         padding:1rem 2rem;
         font-size: 1.2rem;
         font-weight: 600;
@@ -146,6 +147,9 @@ section.dashdiv .electionalert{
             background-color: hsl(83, 68%, 50%);
 
         }
+    }
+    button{
+        all:unset;
     }
 }
     

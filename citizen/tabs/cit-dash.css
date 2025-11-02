@@ -126,7 +126,7 @@ section.dashdiv .electionalert{
             color: hsl(0, 100%, 40%);
         }
     }
-    button{
+    a.vote{
         padding:1rem 2rem;
         font-size: 1.2rem;
         font-weight: 600;
@@ -208,6 +208,7 @@ section.dashdiv .electionalert .leadboard{
         font-size: 1.2rem;
         font-weight: 600;
     }
+    
 }
 
 

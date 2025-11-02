@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mock Biometric Voting</title>
+  <style>
+    :root{
+      --brand:#85c225;
+      --brand-dark:#76b01f;
+      --bg:#f4f6f4;
+      --card:#ffffff;
+      --muted:#6b6b6b;
+      --glass: rgba(0,0,0,0.04);
+      --success: #2ecc71;
+      --danger: #e74c3c;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:20px;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+
+    .app {
+      width:100%;
+      max-width:1100px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap:20px;
+    }
+
+    /* Left: Voting pane */
+    .pane {
+      background:var(--card);
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .brand {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .logo {
+      width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+      display:flex;justify-content:center;align-items:center;color:#fff;font-weight:700;
+    }
+
+    h1{font-size:18px;margin:0}
+    p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    /* Verification area */
+    .verify-card{
+      margin:16px 0 18px;
+      padding:14px;
+      border-radius:10px;
+      background:linear-gradient(180deg, rgba(133,194,37,0.06), rgba(0,0,0,0.01));
+      border:1px solid rgba(133,194,37,0.12);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .verify-left{display:flex;gap:12px;align-items:center}
+    .verify-status{
+      width:36px;height:36px;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+    }
+    .verify-info h3{margin:0;font-size:15px}
+    .verify-info p{margin:6px 0 0;color:var(--muted);font-size:12px}
+
+    .verify-actions{display:flex;gap:8px}
+    .btn {padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.07)}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.warn{background:#ffb020;color:#fff}
+
+    /* Candidates grid */
+    .candidates {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
+    .card {
+      background:var(--card);
+      border-radius:10px;padding:14px;border:1px solid var(--glass);
+      display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(8,8,8,0.06)}
+    .cand-img{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid rgba(0,0,0,0.04)}
+    .cand-name{margin:0;font-weight:700}
+    .cand-party{margin:0;color:var(--muted);font-size:13px}
+    .vote-row{display:flex;gap:8px;width:100%}
+    .vote-btn{flex:1;padding:10px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}
+    .vote-btn[disabled]{opacity:.5;cursor:not-allowed}
+
+    /* Right: summary & leaderboard */
+    .side {
+      display:flex;flex-direction:column;gap:14px;
+      position:sticky; top:20px;
+      height:fit-content;
+    }
+
+    .summary-card, .leader-card{
+      background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--glass);
+      box-shadow:0 8px 20px rgba(0,0,0,0.04)
+    }
+
+    .summary-stats{display:flex;gap:10px;justify-content:space-between}
+    .stat{flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff, #fbfffb);text-align:center}
+    .stat h4{margin:0;font-size:12px;color:var(--muted)}
+    .stat p{margin:6px 0 0;font-weight:700}
+
+    .leader-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.03)}
+    .leader-item:last-child{border-bottom:none}
+    .leader-rank{width:28px;height:28px;border-radius:6px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .leader-info{flex:1}
+    .leader-name{margin:0;font-size:14px}
+    .leader-meta{margin:4px 0 0;color:var(--muted);font-size:12px}
+
+    /* modals & panels */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:60}
+    .modal{background:#fff;padding:18px;border-radius:12px;max-width:520px;width:94%;box-shadow:0 18px 40px rgba(0,0,0,0.18)}
+    .modal h3{margin:0 0 8px}
+    .modal .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .method-card{flex:1;min-width:140px;border-radius:10px;padding:12px;border:1px solid var(--glass);cursor:pointer;text-align:center}
+    .method-card.selected{border-color:var(--brand);box-shadow:0 8px 20px rgba(133,194,37,0.12)}
+    .camera-preview{width:100%;height:240px;background:#111;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff}
+    .finger-anim{width:120px;height:120px;border-radius:12px;border:3px dashed rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:34px}
+    .otp-row{display:flex;gap:8px;margin-top:10px}
+    .otp-row input{flex:1;padding:10px;border-radius:8px;border:1px solid var(--glass)}
+
+    /* small bits */
+    .muted{color:var(--muted);font-size:13px}
+    .small{font-size:12px;color:var(--muted)}
+    .success-pill{background:var(--success);color:#fff;padding:6px 10px;border-radius:999px;font-weight:700}
+
+    /* responsive */
+    @media(max-width:980px){
+      .app{grid-template-columns: 1fr; padding-bottom:40px}
+      .side{position:relative}
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- LEFT: Voting + Verification -->
+    <div class="pane" id="votingPane">
+      <div class="header">
+        <div class="brand">
+          <div class="logo">NV</div>
+          <div>
+            <h1>National Voting — Mock</h1>
+            <p class="lead">Secure voting demo — biometric check required before casting vote</p>
+          </div>
+        </div>
+
+        <div class="small muted">Session: <strong id="sessionId">demo-01</strong></div>
+      </div>
+
+      <!-- Verification card -->
+      <div class="verify-card" id="verifyCard">
+        <div class="verify-left">
+          <div class="verify-status" id="verifyBadge">!</div>
+          <div class="verify-info">
+            <h3 id="verifyTitle">Not Verified</h3>
+            <p id="verifySubtitle">Please verify your identity to enable voting</p>
+          </div>
+        </div>
+
+        <div class="verify-actions">
+          <button class="btn ghost" id="openVerify">Verify Biometrics</button>
+          <button class="btn primary" id="proceedVote" disabled>Proceed to Vote</button>
+        </div>
+      </div>
+
+      <!-- Candidates -->
+      <div>
+        <h2 style="font-size:16px;margin:0 0 10px">Candidates</h2>
+        <div class="candidates" id="candidates">
+          <!-- Cards inserted by JS -->
+        </div>
+      </div>
+
+      <!-- Vote confirmation modal (simple) -->
+      <div class="modal-backdrop" id="confirmBackdrop">
+        <div class="modal" role="dialog" aria-modal="true">
+          <h3 id="confirmTitle">Confirm Vote</h3>
+          <p id="confirmText" class="muted">Are you sure you want to cast your vote for ... ?</p>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+            <button class="btn ghost" onclick="closeConfirm()">Cancel</button>
+            <button class="btn primary" id="confirmBtn">Confirm Vote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Summary + Leaderboard -->
+    <div class="side">
+      <div class="summary-card">
+        <h3 style="margin:0 0 8px">Election Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <h4>Total Votes</h4><p id="totalVotes">0</p>
+          </div>
+          <div class="stat">
+            <h4>Turnout</h4><p id="turnout">0%</p>
+          </div>
+          <div class="stat">
+            <h4>Regions</h4><p id="regionsCount">0 / 24</p>
+          </div>
+        </div>
+        <p class="small" style="margin-top:10px">Verification status: <span id="verLabel" class="small muted">Not verified</span></p>
+      </div>
+
+      <div class="leader-card">
+        <h3 style="margin:0 0 8px">Live Leaderboard</h3>
+        <div id="leaderList">
+          <!-- Leader items inserted by JS -->
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3 style="margin:0 0 8px">Notes</h3>
+        <p class="small">This is a mock demo. Biometric verification here is simulated; replace with real verification services & secure APIs for production.</p>
+        <p class="small" style="margin-top:6px">If your device supports a camera, face scan will attempt to use it. Fingerprint is a simulated flow. OTP uses a mock code.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VERIFY MODAL -->
+  <div class="modal-backdrop" id="verifyModal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Verify Your Identity</h3>
+      <p class="muted">Choose a verification method. If your device supports a camera, face scan will use it.</p>
+
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <div class="method-card" id="method-face" onclick="selectMethod('face')">
+          <strong>Face Scan</strong>
+          <p class="small muted" style="margin:6px 0 0">Use your device camera</p>
+        </div>
+        <div class="method-card" id="method-finger" onclick="selectMethod('finger')">
+          <strong>Fingerprint</strong>
+          <p class="small muted" style="margin:6px 0 0">Simulated fingerprint reader</p>
+        </div>
+        <div class="method-card" id="method-otp" onclick="selectMethod('otp')">
+          <strong>OTP (Fallback)</strong>
+          <p class="small muted" style="margin:6px 0 0">Receive a code to your phone/email</p>
+        </div>
+      </div>
+
+      <div id="methodPanel" style="margin-top:14px"></div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button class="btn ghost" onclick="closeVerifyModal()">Close</button>
+        <button class="btn primary" id="startVerifyBtn" onclick="startVerification()" disabled>Start</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* -----------------------------
+       Mock data & initial state
+       ----------------------------- */
+    const session = {
+      id: 'demo-01',
+      verified: false,
+      verifiedBy: null, // 'face' | 'finger' | 'otp'
+      votedFor: null
+    };
+
+    document.getElementById('sessionId').innerText = session.id;
+
+    const candidatesData = [
+      { id: 'c1', name: 'Bello Ibrahim', party: 'Reform Alliance', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=60', votes: 10240 },
+      { id: 'c2', name: 'Chinwe Okafor', party: 'Unity Front', img: 'https://images.unsplash.com/photo-1545996124-9d0a0f0d5bde?w=500&q=60', votes: 7540 },
+      { id: 'c3', name: 'Yakubu Musa', party: "People's Progressive", img: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=60', votes: 6140 },
+    ];
+
+    // derive totals
+    function totalVotes(){
+      return candidatesData.reduce((s,c)=>s+c.votes,0) + (session.votedFor ? 1 : 0); // reflect local vote
+    }
+
+    function renderCandidates(){
+      const wrap = document.getElementById('candidates');
+      wrap.innerHTML = '';
+      candidatesData.forEach(c=>{
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `
+          <img class="cand-img" src="${c.img}" alt="${c.name}">
+          <h3 class="cand-name">${c.name}</h3>
+          <p class="cand-party">${c.party}</p>
+          <div style="width:100%;display:flex;gap:8px;margin-top:8px;align-items:center">
+            <div style="flex:1;color:var(--muted);font-size:13px">${c.votes.toLocaleString()} votes</div>
+            <button class="vote-btn" ${session.verified && !session.votedFor ? '' : 'disabled'} onclick="openConfirm('${c.id}')">Vote</button>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+      // if voted, disable all vote buttons and show chosen
+      if(session.votedFor){
+        document.querySelectorAll('.vote-btn').forEach(b=>b.disabled=true);
+      }
+    }
+
+    function renderLeader(){
+      const list = document.getElementById('leaderList');
+      list.innerHTML = '';
+      // sort copy
+      const sorted = [...candidatesData].sort((a,b)=>b.votes - a.votes);
+      sorted.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'leader-item';
+        div.innerHTML = `
+          <div class="leader-rank">${i+1}</div>
+          <div style="width:44px;height:44px;border-radius:8px;overflow:hidden"><img src="${c.img}" style="width:100%;height:100%;object-fit:cover"></div>
+          <div class="leader-info">
+            <div class="leader-name">${c.name}</div>
+            <div class="leader-meta">${c.party} • ${((c.votes/totalVotes())*100 || 0).toFixed(1)}%</div>
+          </div>
+          <div style="font-weight:700">${c.votes.toLocaleString()}</div>
+        `;
+        list.appendChild(div);
+      });
+
+      document.getElementById('totalVotes').innerText = totalVotes().toLocaleString();
+      document.getElementById('turnout').innerText = Math.min(99.9, ((totalVotes()/35000)*100)).toFixed(1) + '%';
+      document.getElementById('regionsCount').innerText = '18 / 24';
+      document.getElementById('verLabel').innerText = session.verified ? `Verified (${session.verifiedBy})` : 'Not verified';
+    }
+
+    renderCandidates();
+    renderLeader();
+
+    /* -----------------------------
+       Verify modal logic
+       ----------------------------- */
+
+    const verifyModal = document.getElementById('verifyModal');
+    const verifyBackdrop = verifyModal;
+    const openVerifyBtn = document.getElementById('openVerify');
+    const proceedVoteBtn = document.getElementById('proceedVote');
+    const verifyBadge = document.getElementById('verifyBadge');
+    const verifyTitle = document.getElementById('verifyTitle');
+    const verifySubtitle = document.getElementById('verifySubtitle');
+
+    openVerifyBtn.addEventListener('click', ()=>{ verifyModal.style.display='flex'; selectedMethod=null; setupMethodPanel(); });
+
+    function closeVerifyModal(){ verifyModal.style.display='none'; stopCamera(); }
+
+    // method selection
+    let selectedMethod = null;
+    function selectMethod(m){
+      selectedMethod = m;
+      document.querySelectorAll('.method-card').forEach(el=>el.classList.remove('selected'));
+      document.getElementById('method-'+m).classList.add('selected');
+      document.getElementById('startVerifyBtn').disabled = false;
+      setupMethodPanel(m);
+    }
+
+    function setupMethodPanel(method){
+      const panel = document.getElementById('methodPanel');
+      panel.innerHTML = '';
+      if(!method) return;
+      if(method === 'face'){
+        panel.innerHTML = `
+          <div style="margin-top:10px">
+            <div class="camera-preview" id="cameraPreview"> <span id="camMsg">Camera preview</span> </div>
+            <p class="small muted" style="margin-top:8px">Position your face in the frame and press start. This demo will attempt to access your camera (mock verification).</p>
+          </div>
+        `;
+      } else if(method === 'finger'){
+        panel.innerHTML = `
+          <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
+            <div class="finger-anim" id="fingerAnim">☝️</div>
+            <div style="flex:1">
+              <p class="small muted">Place finger on the reader. This demo simulates fingerprint verification animation.</p>
+              <div id="fingerStatus" class="small muted">Ready</div>
+            </div>
+          </div>
+        `;
+      } else if(method === 'otp'){
+        panel.innerHTML = `
+          <div style="margin-top:10px">
+            <p class="small muted">Send a one-time passcode to your registered phone/email (mock).</p>
+            <div class="otp-row">
+              <input id="otpTarget" placeholder="Enter phone or email" />
+              <button class="btn primary" onclick="sendMockOtp()">Send</button>
+            </div>
+            <div id="otpSent" style="margin-top:8px"></div>
+          </div>
+        `;
+      }
+    }
+
+    // camera handling (attempts to access camera; if not allowed we'll fallback)
+    let stream = null;
+    async function startCamera(previewEl){
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
+        const video = document.createElement('video');
+        video.autoplay = true;
+        video.playsInline = true;
+        video.srcObject = stream;
+        video.style.width='100%';
+        video.style.height='100%';
+        video.style.objectFit='cover';
+        previewEl.innerHTML=''; previewEl.appendChild(video);
+      }catch(err){
+        // fallback to placeholder
+        previewEl.innerHTML = '<div style="padding:18px;color:#ddd">Camera not available or permission denied</div>';
+        console.warn('Camera error', err);
+      }
+    }
+
+    function stopCamera(){
+      if(stream){
+        stream.getTracks().forEach(t=>t.stop());
+        stream = null;
+      }
+    }
+
+    // start verification (mock flows)
+    async function startVerification(){
+      if(!selectedMethod) return alert('Choose a method');
+      document.getElementById('startVerifyBtn').disabled = true;
+      if(selectedMethod === 'face'){
+        const preview = document.getElementById('cameraPreview');
+        document.getElementById('camMsg').innerText = 'Requesting camera…';
+        await startCamera(preview);
+        // simulate processing
+        document.getElementById('camMsg').innerText = 'Scanning face...';
+        await sleep(1400);
+        const ok = Math.random() > 0.12; // 88% success rate
+        finalizeVerification(ok ? 'face' : null);
+      } else if(selectedMethod === 'finger'){
+        const anim = document.getElementById('fingerAnim');
+        const status = document.getElementById('fingerStatus');
+        status.innerText = 'Scanning...';
+        anim.style.transition='transform .35s ease';
+        anim.style.transform='translateY(-6px) scale(1.05)';
+        await sleep(1000);
+        anim.style.transform='translateY(0) scale(1)';
+        await sleep(800);
+        const ok = Math.random() > 0.08;
+        finalizeVerification(ok ? 'finger' : null);
+      } else if(selectedMethod === 'otp'){
+        // check if code was 'sent' and validate
+        if(!window.mockOtpCode){
+          alert('Send the OTP first (mock).');
+          document.getElementById('startVerifyBtn').disabled = false;
+          return;
+        }
+        const code = prompt('Enter the mock OTP code (check the panel):','');
+        if(code && code === window.mockOtpCode){
+          finalizeVerification('otp');
+        } else {
+          finalizeVerification(null);
+        }
+      }
+    }
+
+    function finalizeVerification(method){
+      closeVerifyModal();
+      document.getElementById('startVerifyBtn').disabled = false;
+      if(method){
+        session.verified = true;
+        session.verifiedBy = method;
+        // update UI
+        verifyBadge.innerText = '✓';
+        verifyTitle.innerText = 'Verified';
+        verifySubtitle.innerText = `Verified by ${method}`;
+        verifyBadge.style.background = 'var(--brand)';
+        document.getElementById('proceedVote').disabled = false;
+        renderCandidates();
+        renderLeader();
+        alert('✅ Verification successful ('+method+') — you may now vote.');
+      } else {
+        session.verified = false;
+        session.verifiedBy = null;
+        verifyBadge.innerText = '!';
+        verifyTitle.innerText = 'Verification Failed';
+        verifySubtitle.innerText = 'Try another method or use OTP';
+        verifyBadge.style.background = '#c0392b';
+        renderCandidates();
+        renderLeader();
+        alert('⚠️ Verification failed — please try again or use OTP.');
+      }
+    }
+
+    function sendMockOtp(){
+      const target = document.getElementById('otpTarget').value || 'user@example.com';
+      window.mockOtpCode = (''+Math.floor(100000 + Math.random()*899999));
+      document.getElementById('otpSent').innerHTML = `<div class="small">Mock OTP sent to <strong>${target}</strong>: <span style="font-weight:700">${window.mockOtpCode}</span></div>`;
+    }
+
+    // simple helpers
+    function sleep(ms){ return new Promise(res=>setTimeout(res,ms)); }
+
+    // close verify modal when clicking outside
+    verifyModal.addEventListener('click', (e)=>{
+      if(e.target === verifyModal) { closeVerifyModal(); }
+    });
+
+    /* -----------------------------
+       Vote confirm & logic
+       ----------------------------- */
+    const confirmBackdrop = document.getElementById('confirmBackdrop');
+    const confirmTitle = document.getElementById('confirmTitle');
+    const confirmText = document.getElementById('confirmText');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    let pendingCandidate = null;
+
+    function openConfirm(candidateId){
+      if(!session.verified){ alert('Please verify biometrics before voting.'); return; }
+      if(session.votedFor){ alert('You have already voted in this session.'); return; }
+
+      pendingCandidate = candidatesData.find(c=>c.id===candidateId);
+      confirmTitle.innerText = 'Confirm Vote';
+      confirmText.innerText = `You are about to cast your vote for ${pendingCandidate.name} (${pendingCandidate.party}). This action is final in this mock demo.`;
+      confirmBackdrop.style.display = 'flex';
+    }
+
+    function closeConfirm(){
+      confirmBackdrop.style.display = 'none';
+      pendingCandidate = null;
+    }
+
+    confirmBtn.addEventListener('click', ()=>{
+      if(!pendingCandidate) return;
+      // simulate secure submission & biometric double-check
+      // here we 'trust' the session. In real system, attach biometric proof to vote submission.
+      pendingCandidate.votes += 1;
+      session.votedFor = pendingCandidate.id;
+      closeConfirm();
+      renderCandidates();
+      renderLeader();
+      // lock vote buttons and show a success message
+      document.getElementById('proceedVote').disabled = true;
+      document.getElementById('verifyBadge').innerText = 'V';
+      document.getElementById('verifyTitle').innerText = 'Vote Cast';
+      document.getElementById('verifySubtitle').innerText = `${pendingCandidate.name} — ${pendingCandidate.party}`;
+      alert('✅ Vote cast successfully for ' + pendingCandidate.name + '. Thank you for participating (mock).');
+    });
+
+    // allow proceed-to-vote to scroll to candidates
+    document.getElementById('proceedVote').addEventListener('click', ()=>{
+      document.getElementById('candidates').scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    /* -----------------------------
+       Misc: keyboard accessibility
+       ----------------------------- */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        closeVerifyModal();
+        closeConfirm();
+      }
+    });
+
+    /* -----------------------------
+       Initial modal setup helper
+       ----------------------------- */
+    // create candidate cards on load
+    (function init(){
+      renderCandidates();
+      renderLeader();
+      setupMethodPanel(); // no selection
+    })();
+
+  </script>
+</body>
+</html>
