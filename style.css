@@ -146,9 +146,22 @@ button.login{
 }
 button.Biometrics{
     border-radius: 50%;
-    padding:15px;
+    /* padding:15px; */
     aspect-ratio: 1;
-    height: 100%;
+    /* height: 100%; */
+    a{
+        display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i{
+        color: #f2f2f2;
+        font-size: 1.5rem;
+    }
 }
 /* @media screen and (max-width:1000px){
     .gencont{
