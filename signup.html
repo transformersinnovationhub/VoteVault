@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Vault Demo Login</title>
+    <link rel="stylesheet" href="signup.css">
+    <link rel="stylesheet" href="media-queries.css">
+    <script src="https://kit.fontawesome.com/75d8986235.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="gencont">
+        <div class="imgcont"></div>
+    <div class='login-container'>
+            <div class="login-head-cont">
+        <img src="" alt="" />
+            <h1>Vote Vault</h1>
+            
+            </div>
+            
+            <form class='Login'>
+                <h2>Sign Up</h2>
+
+
+                <div class="identcont">
+                    <h2>Which best describes your role?</h2><span></span>
+                    <div class="ident">
+                        <div class="admin"><i class="fa-solid fa-user-tie"></i><p>Admin</p></div>
+                        <div class="Citizen"><i class="fa-solid fa-check-to-slot"></i><p>Citizen</p></div>
+                        <div class="electorate"><i class="fa-solid fa-ranking-star"></i><p>Electorate</p></div>
+                    </div>
+                    
+                </div>
+                <div class="input-group-cont">
+                    <div class='input-group'>
+                        <label for='firstname'>Firstname</label>
+                        <input type='text' id='firstname' name='firstname' required placeholder='e.g.Christopher'/>
+                    </div>
+                    <div class='input-group'>
+                        <label for='lastname'>Lastname</label>
+                        <input type='text' id='lastname' name='lastname' required placeholder='e.g.Adekunle'/>
+                    </div>
+                    <div class='input-group'>
+                        <label for='othername'>Other names...</label>
+                        <input type='text' id='othername' name='othernames' required placeholder='e.g.Light Okosun James'/>
+                    </div>
+                    <div class='input-group'>
+                        <label for='email'>Email address</label>
+                        <input type='email' id='email' name='email' required placeholder='e.g.example@email.com'/>
+                    </div>
+
+                    <div class='input-group'>
+                        <label for='age'>Age</label>
+                        <input type='number' id='age' name='age' required min="18" max="999" placeholder='e.g.Light Okosun James'/>
+                    </div>
+                    
+                    
+                    
+                    <div class='input-group'>
+                        <label for='NIN'>NIN</label>
+                        <input type='number' id='NIN' name='NIN' required maxLength={11} placeholder="11112222890"/>
+                    </div>
+                    <div class='input-group'>
+                        <label for='NIN'>Phone number</label>
+                        <input type="tel" id='NIN' name='NIN' required maxLength={11} placeholder="09012345678"/>
+                    </div>
+                </div>
+
+                <div class='input-group'>
+                        <label for='email'>Email address</label>
+                        <input type='email' id='email' name='email' required placeholder='e.g.example@email.com'/>
+                </div>
+                <h2>Biometrics</h2>
+                <div>
+                    <div class='input-group'>
+                        <label name='passort'>Select Passport photo</label>
+                        <input type='file' id='passort' name='email' required placeholder='e.g.example@email.com'/>
+                    </div>
+                        
+
+                    <div class='foi-div'>
+                        <label for='id'>Form of Identification:</label><br>
+                        <label for="NID">National ID card</label>
+                        <input type='radio'  value='NID' id='NID' name='id' />
+                        <label for="DL">Driver's Lisence </label>
+                        <input type='radio'  value='DL' id='DL' name='id' />
+                        <label for="IP">International Passport</label>
+                        <input type='radio'  value='IP' id='IP' name='id' />
+                        
+
+                    </div>
+                    <div class='input-group'>
+                        <label name='passort'>Select Picture of Identification</label>
+                        <input type='file' id='passort' name='email' required placeholder='e.g.example@email.com'/>
+                    </div>
+                    <div class="biometFcont">
+                        <div class="biomet"><a href="bio.html"><i class="fa-solid fa-fingerprint"></i></a></div>
+                    </div>
+                </div>
+                
+                
+
+                <button type='submit'><a href="admin.html">Verify & Sign up</a></button>
+                <p>Already have an account? <a href="index.html">Login</a> </p>
+            </form>
+            <form class='Signup'>
+
+                <signup/>
+            </form>
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

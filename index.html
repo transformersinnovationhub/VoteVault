@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Vault Demo Login </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media-queries.css">
+    <script src="https://kit.fontawesome.com/75d8986235.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="gencont">
+        <div class="imgcont"></div>
+    <div class='login-container'>
+            <div class="login-head-cont">
+        <img src="" alt="" />
+            <h1>Vote Vault</h1>
+            
+            </div>
+            
+            <form class='Login'>
+                <h2>Login</h2>
+                <div class="input-group-cont">
+                    <div class='input-group'>
+                        <label htmlFor='username'>Username/ Email address</label>
+                        <input type='text' id='username' name='username' required placeholder='e.g.example@email.com'/>
+                    </div>
+                    <div class='input-group'>
+                        <label htmlFor='password'>Password</label>
+                        <input type='password' id='password' name='password' required />
+                    </div>
+                    <div class='input-group'>
+                        <label htmlFor='NIN'>NIN</label>
+                        <input type='number' id='NIN' name='NIN' required maxLength={11} placeholder="09876543210"/>
+                    </div>
+
+                </div>
+                
+                <div class="signbutton">
+                    <button class="login" type='submit'><a href="home.html">Login</a></button>
+                    <button type="submit" class="Biometrics"><a href=""><i class="fa-solid fa-fingerprint"></i></a></button>
+                    </div>
+                <p>Don't have an account? <a href="signup.html">Sign up</a> </p>
+            </form>
+            <form class='Signup'>
+
+                <signup/>
+            </form>
+
+        </div>
+    </div>
+    
+</body>
+</html>

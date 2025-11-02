@@ -1,0 +1,22 @@
+@media screen and (max-width:830px) {
+    
+    .gencont{
+        display: block;
+    }
+    .imgcont{
+        display: none;
+        
+    } 
+    .login-container{
+        width: 100%;
+        padding: 2rem;
+    }
+    h1{
+        font-size: 2rem;
+    }
+    .biometrics{
+        i{
+            
+        }
+    }
+}
