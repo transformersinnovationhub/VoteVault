@@ -1,0 +1,170 @@
+/* #cacad1 */
+/* #d7ac46 */
+/* #85c225 */
+
+
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+}
+a{
+    text-decoration: none;
+    display: inline-block;
+}
+body{
+    min-width: 100vw;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    /* background-image: url(images/ttten.svg); */
+    background-position: center;
+    background-size: 30%;
+    background-attachment: scroll;
+    backdrop-filter: blur(2px);
+    background-color: hsl(0, 0%, 96%);
+    flex-direction: row;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+nav{
+    display: inline-block;
+    width: 18rem;
+    min-height: 100vh;
+    background-color:#85c225 ;
+}
+nav .nav-items{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    padding: 0 5px;
+}
+nav .nav-items a{
+    display: flex;
+    justify-content: start;
+    align-content: center;
+    flex-direction: row;
+    padding:1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:18px;
+    font-weight: 500;
+    border-radius: 10px;
+    color: #fafafa;
+    &:hover{
+        color: hsl(83, 68%, 53%);
+        background-color: #fafafa;
+        span{
+            background-image: none;
+            background-color: #85c225;
+        }
+    }
+    &.active{
+        color: hsl(83, 68%, 53%);
+        background-color: #fafafa;
+        span{
+            background-image: none;
+            background-color: #85c225;
+        }
+    }
+    span{
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        aspect-ratio: 1;
+        
+        border-radius: 50%;
+        background-image: linear-gradient(130deg, #d7ac46,hsl(42, 64%, 70%),#d7ac46);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #d7ac46;
+        margin-left:10px;
+    }
+}
+nav .imgcont{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0 2rem;
+}
+nav .img{
+    aspect-ratio: 1;
+    width: 5rem;
+    border-radius: 50%;
+    border: 2px solid #d7ac46;
+    display: inline-block;
+    background-image: url(images/VV-S.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+nav hr{
+    margin: 1rem 0;
+    border:1px solid #fafafa;
+
+}
+nav .sp-items{
+    display: flex;
+    flex-direction: column;
+    a{
+        display: flex;
+    justify-content: start;
+    align-content: center;
+    flex-direction: row;
+    padding:1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    border-radius: 10px;
+    color: #fafafa;
+    &:hover{
+        color: hsl(83, 68%, 53%);
+        background-color: #fafafa;
+        span{
+            background-image: none;
+            background-color: #85c225;
+        }
+    }
+    &.active{
+        color: hsl(83, 68%, 53%);
+        background-color: #fafafa;
+        span{
+            background-image: none;
+            background-color: #85c225;
+        }
+    }
+    span{
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        aspect-ratio: 1;
+        
+        border-radius: 50%;
+        background-image: linear-gradient(130deg, #d7ac46,hsl(42, 64%, 70%),#d7ac46);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #d7ac46;
+        margin-left:10px;
+    }
+    }
+}
+nav .sp-items .logout{
+    
+    &:hover{
+        color: hsl(9, 68%, 53%);
+
+    }
+}
+
+
+iframe{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    /* overflow-y: scroll; */
+    padding:1rem;
+}
+

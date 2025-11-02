@@ -1,0 +1,71 @@
+@media screen and (max-width:830px) {
+    section.mainframe{
+    }
+    .welcdisp{
+        padding:0.5rem;
+        flex-wrap: wrap-reverse;
+        .imgcont{
+            display: none;
+            margin-top: 1rem ;
+        }
+        .welcome-message h2{
+            font-size: 2px;
+        }
+        p{
+            font-size: 3px;
+        }
+    }
+    section.dashdiv, section.LEM{
+        
+        padding: 1rem;
+        .dashelectcont{
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+    section.dashdiv{
+
+    }
+    .electionalert, .votepan{
+        min-width: 100%;
+
+    }
+    .electionalert .leadboard{
+        flex-wrap: wrap;
+    }
+
+    .dashoftcont{
+        justify-content: center;
+        flex-wrap: wrap;
+        gap:5px;
+        .infocont{
+            min-width:45%;
+            
+        }
+        .infocont div{
+           min-height: fit-content;
+            padding-left:10px ;
+        }
+    
+        h1,li{
+                /* margin-left:-10px; */
+            font-size: 1.5em;
+        }
+    }
+    section.LEM{
+        max-width: 100%;
+        .mapcont img{
+            max-width: 100%;
+        }
+    }
+}
+
+
+
+@media screen and (max-width:530px) {
+    .welcdisp{
+        
+    }
+
+}
